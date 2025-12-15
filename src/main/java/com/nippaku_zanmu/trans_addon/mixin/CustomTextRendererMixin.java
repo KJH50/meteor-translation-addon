@@ -148,7 +148,7 @@ public abstract class CustomTextRendererMixin implements TextRenderer {
                 .attachments(MinecraftClient.getInstance().getFramebuffer())
                 .pipeline(MeteorRenderPipelines.UI_TEXT)
                 .mesh(mesh)
-                .sampler("u_Texture", font_fix.texture.getGlTextureView())
+                .sampler("u_Texture", font_fix.texture.getGlTextureView(), font_fix.texture.getSampler())
                 .end();
         }
 
