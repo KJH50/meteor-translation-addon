@@ -49,7 +49,7 @@ tasks {
 
     jar {
         from("LICENSE") {
-            rename { "${it}_${project.base.archivesBaseName}" }
+            "${it}_${inputs.properties["archivesName"]}"
         }
     }
 
