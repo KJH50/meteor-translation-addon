@@ -3,18 +3,16 @@ package com.nippaku_zanmu.trans_addon.mixin;
 import com.nippaku_zanmu.trans_addon.font_fix.FontFix;
 import meteordevelopment.meteorclient.renderer.*;
 import meteordevelopment.meteorclient.renderer.text.CustomTextRenderer;
-import meteordevelopment.meteorclient.renderer.text.Font;
 import meteordevelopment.meteorclient.renderer.text.FontFace;
 import meteordevelopment.meteorclient.renderer.text.TextRenderer;
-import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import net.minecraft.client.MinecraftClient;
-import org.lwjgl.BufferUtils;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import static meteordevelopment.meteorclient.renderer.text.CustomTextRenderer.SHADOW_COLOR;
@@ -41,10 +39,9 @@ public abstract class CustomTextRendererMixin implements TextRenderer {
 
 
     @Inject(method = "<init>",at = @At("RETURN"))
-    public void onInit(FontFace fontFace, CallbackInfo ci) {
+    public void onInit(FontFace fontFace, CallbackInfo ci) throws IOException {
 
-        byte[] bytes = Utils.readBytes(fontFace.toStream());
-        ByteBuffer buffer = BufferUtils.createByteBuffer(bytes.length).put(bytes).flip();
+        ByteBuffer buffer = fontFace.readToDirectByteBuffer();
 
         fonts_fix = new FontFix[5];
         for (int i = 0; i < fonts_fix.length; i++) {
