@@ -27,7 +27,9 @@ The module may not support your game language. Set the language to a supported l
 ## 为什么启用翻译过后功能名称一片空白/流星端字体无法正常渲染
 
 0.2版本已修复流星字体渲染引擎的问题 如果模块名称无法正常显示 请将流星的自定义字体切换为任意支持中文的字体
-
+## 在自己开发的插件中添加中文翻译
+导出json并进行翻译后放置在mod的资源文件夹内 或者使用资源包的形式
+可参考我开发的另一个插件 [先进投影打印机](https://github.com/Nippaku-Zanmu/Seija-Printer)
 ## 鸣谢列表
 [MeteorDevelopment](https://github.com/MeteorDevelopment) 的流星端插件模板
 
