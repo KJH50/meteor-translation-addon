@@ -8,12 +8,10 @@ package com.nippaku_zanmu.trans_addon.settings;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import meteordevelopment.meteorclient.settings.IVisible;
 import meteordevelopment.meteorclient.settings.Setting;
-import net.minecraft.entity.EntityType;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
-
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -99,10 +97,10 @@ public class StringSelectSetting extends Setting<Set<String>> {
     }
 
     @Override
-    public NbtCompound save(NbtCompound tag) {
-        NbtList valueTag = new NbtList();
+    public CompoundTag save(CompoundTag tag) {
+        ListTag valueTag = new ListTag();
         for (String s : get()) {
-            valueTag.add(NbtString.of(s));
+            valueTag.add(StringTag.valueOf(s));
         }
         tag.put("value", valueTag);
 
@@ -110,11 +108,11 @@ public class StringSelectSetting extends Setting<Set<String>> {
     }
 
     @Override
-    public Set<String> load(NbtCompound tag) {
+    public Set<String> load(CompoundTag tag) {
         get().clear();
 
-        NbtList valueTag = tag.getListOrEmpty("value");
-        for (NbtElement tagI : valueTag) {
+        ListTag valueTag = tag.getListOrEmpty("value");
+        for (Tag tagI : valueTag) {
             String s = tagI.asString().orElse("");
             if ((filter == null || filter.test(s))&& validValues.contains(s))get().add(s);
 //            EntityType<?> type = Registries.ENTITY_TYPE.get(Identifier.of(tagI.asString()));

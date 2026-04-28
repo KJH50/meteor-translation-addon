@@ -1,5 +1,6 @@
 plugins {
-    id "fabric-loom" version "1.14-SNAPSHOT"
+    id 'net.fabricmc.fabric-loom' version '1.15.+'
+    id 'maven-publish'
 }
 
 base {
@@ -25,14 +26,13 @@ repositories {
 dependencies {
     // Fabric
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     // Meteor
     //临时使用流星CI构建
 //    modImplementation files('D:\\hack\\SeijaLib\\meteor-client-1.21.6-local.jar')
 
-    modImplementation "meteordevelopment:meteor-client:${project.minecraft_version}-SNAPSHOT"
+    implementation "meteordevelopment:meteor-client:${project.minecraft_version}-SNAPSHOT"
 }
 
 tasks {
@@ -60,6 +60,6 @@ tasks {
 
     tasks.withType(JavaCompile).configureEach {
         it.options.encoding = "UTF-8"
-        it.options.release = 21
+        it.options.release = 25
     }
 }

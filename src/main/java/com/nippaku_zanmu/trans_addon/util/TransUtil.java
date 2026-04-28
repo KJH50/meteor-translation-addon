@@ -2,17 +2,16 @@ package com.nippaku_zanmu.trans_addon.util;
 
 import meteordevelopment.meteorclient.addons.AddonManager;
 import meteordevelopment.meteorclient.systems.modules.Module;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TransUtil {
-    private static final MinecraftClient mc = MinecraftClient.getInstance();
+    private static final Minecraft mc = Minecraft.getInstance();
 
     private static String trans(String s) {
-        return Text.translatable(s).getString();
+        return Component.translatable(s).getString();
     }
     public static String trans(String key,String alternative){
         String trans = trans(key);
