@@ -24,6 +24,7 @@ import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.screens.ModuleScreen;
 import meteordevelopment.meteorclient.gui.screens.ModulesScreen;
+import meteordevelopment.meteorclient.gui.screens.NotebotSongsScreen;
 import meteordevelopment.meteorclient.gui.screens.ProxiesScreen;
 import meteordevelopment.meteorclient.gui.screens.accounts.AccountsScreen;
 import meteordevelopment.meteorclient.gui.tabs.Tab;
@@ -232,7 +233,7 @@ public class Translation extends Module {
             return;
         }
 
-        ChatUtils.info("开始扫描 GUI 界面，约需 60 秒，扫描结束后会自动导出未知文本");
+        ChatUtils.info("开始扫描 GUI 界面，约需 5 分钟，扫描结束后会自动导出未知文本");
         Timer timer = new Timer();
         GuiTheme t = GuiThemes.get();
 
@@ -243,17 +244,17 @@ public class Translation extends Module {
             public void run() { mc.execute(() -> mc.setScreen(new ModulesScreen(t))); }
         }, 1000);
 
-        // Cycle through the first 8 modules to collect their setting strings
-        int moduleCount = Math.min(modules.size(), 8);
+        // Cycle through all modules to collect their setting strings and enum values
+        int moduleCount = modules.size();
         for (int i = 0; i < moduleCount; i++) {
             final Module module = modules.get(i);
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() { mc.execute(() -> mc.setScreen(new ModuleScreen(t, module))); }
-            }, 5000 + i * 3000);
+            }, 5000 + i * 1500);
         }
 
-        int afterModules = 5000 + moduleCount * 3000;
+        int afterModules = 5000 + moduleCount * 1500;
 
         timer.schedule(new TimerTask() {
             @Override
@@ -272,13 +273,18 @@ public class Translation extends Module {
 
         timer.schedule(new TimerTask() {
             @Override
+            public void run() { mc.execute(() -> mc.setScreen(new NotebotSongsScreen(t))); }
+        }, afterModules + 13000);
+
+        timer.schedule(new TimerTask() {
+            @Override
             public void run() {
                 mc.execute(() -> {
                     mc.setScreen(null);
                     dumpUnknownText();
                 });
             }
-        }, afterModules + 14000);
+        }, afterModules + 18000);
     }
 
     private void dumpUnknownText() {
