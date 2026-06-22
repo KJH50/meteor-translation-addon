@@ -10,6 +10,19 @@
     "DefaultSettingsWidgetFactoryMixin",
     "ModuleAccessor",
     "SettingAccessor",
-    "SettingGroupAccessor"
+    "SettingGroupAccessor",
+    "HudElementInfoAccessor",
+    "CategoryAccessor",
+    "CommandAccessor",
+    "PresetAccessor",
+    "TabAccessor",
+    "WLabelMixin",
+    "WButtonMixin",
+    "WWindowMixin",
+    "WidgetScreenMixin",
+    "WWidgetMixin",
+    "WSectionMixin",
+    "ChatUtilsMixin",
+    "ChatUtilsPrefixMixin"
   ]
 }
