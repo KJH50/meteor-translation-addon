@@ -22,6 +22,10 @@ import meteordevelopment.meteorclient.commands.Command;
 import meteordevelopment.meteorclient.commands.Commands;
 import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.GuiThemes;
+import meteordevelopment.meteorclient.gui.screens.ModuleScreen;
+import meteordevelopment.meteorclient.gui.screens.ModulesScreen;
+import meteordevelopment.meteorclient.gui.screens.ProxiesScreen;
+import meteordevelopment.meteorclient.gui.screens.accounts.AccountsScreen;
 import meteordevelopment.meteorclient.gui.tabs.Tab;
 import meteordevelopment.meteorclient.gui.tabs.Tabs;
 import meteordevelopment.meteorclient.gui.widgets.WWidget;
@@ -32,6 +36,7 @@ import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.config.Config;
 import meteordevelopment.meteorclient.systems.hud.Hud;
 import meteordevelopment.meteorclient.systems.hud.HudElementInfo;
+import meteordevelopment.meteorclient.systems.hud.screens.HudEditorScreen;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
@@ -48,7 +53,7 @@ public class Translation extends Module {
     public final Setting<Boolean> bSetAutoTranslation = sgGeneral.add(new BoolSetting.Builder()
         .name("auto-translation")
         .description("")
-        .defaultValue(false)
+        .defaultValue(true)
         .build());
 
     public final Setting<Set<String>> translationModules = sgGeneral.add(new StringSelectSetting.Builder()
@@ -99,6 +104,13 @@ public class Translation extends Module {
         .visible(bSetScanUnknown::get)
         .build());
 
+    public final Setting<Boolean> bSetAutoScanGuis = sgDev.add(new BoolSetting.Builder()
+        .name("auto-scan-guis")
+        .description("Open common GUI screens on activation to collect untranslated strings.")
+        .defaultValue(false)
+        .visible(bSetScanUnknown::get)
+        .build());
+
 
     public Translation() {
         super(MeteorTranslation.CATEGORY, "meteor-trans", "An example module that highlights the center of the world.");
@@ -131,6 +143,14 @@ public class Translation extends Module {
                     });
                 }
             }, 5000);
+        }
+
+        if (bSetAutoScanGuis.get()) {
+            // Give the client a moment to finish init before switching screens
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() { mc.execute(() -> { if (isActive()) scanGUIs(); }); }
+            }, 8000);
         }
 
         ChatUtils.warning("流星翻译插件是开源的项目且完全免费 作者不会以任何形式对此插件进行收费");
@@ -189,9 +209,76 @@ public class Translation extends Module {
             WHorizontalList l3 = list.add(theme.horizontalList()).expandX().widget();
             WButton dumpUnknown = l3.add(theme.button("Dump Unknown")).expandX().widget();
             dumpUnknown.action = this::dumpUnknownText;
+
+            WHorizontalList l4 = list.add(theme.horizontalList()).expandX().widget();
+            WButton scanGuis = l4.add(theme.button("Scan GUIs")).expandX().widget();
+            scanGuis.action = this::scanGUIs;
         }
 
         return list;
+    }
+
+    private void scanGUIs() {
+        if (!this.isActive()) {
+            ChatUtils.warning("你首先要开启此模块");
+            return;
+        }
+        if (!bSetScanUnknown.get()) {
+            ChatUtils.warning("请先开启 Scan Unknown Text");
+            return;
+        }
+        if (!TextReplacement.isEnabled()) {
+            ChatUtils.warning("请先开启 Universal Translation");
+            return;
+        }
+
+        ChatUtils.info("开始扫描 GUI 界面，约需 60 秒，扫描结束后会自动导出未知文本");
+        Timer timer = new Timer();
+        GuiTheme t = GuiThemes.get();
+
+        java.util.List<Module> modules = new java.util.ArrayList<>(Modules.get().getAll());
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() { mc.execute(() -> mc.setScreen(new ModulesScreen(t))); }
+        }, 1000);
+
+        // Cycle through the first 8 modules to collect their setting strings
+        int moduleCount = Math.min(modules.size(), 8);
+        for (int i = 0; i < moduleCount; i++) {
+            final Module module = modules.get(i);
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() { mc.execute(() -> mc.setScreen(new ModuleScreen(t, module))); }
+            }, 5000 + i * 3000);
+        }
+
+        int afterModules = 5000 + moduleCount * 3000;
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() { mc.execute(() -> mc.setScreen(new ProxiesScreen(t))); }
+        }, afterModules + 1000);
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() { mc.execute(() -> mc.setScreen(new AccountsScreen(t))); }
+        }, afterModules + 5000);
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() { mc.execute(() -> mc.setScreen(new HudEditorScreen(t))); }
+        }, afterModules + 9000);
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                mc.execute(() -> {
+                    mc.setScreen(null);
+                    dumpUnknownText();
+                });
+            }
+        }, afterModules + 14000);
     }
 
     private void dumpUnknownText() {
