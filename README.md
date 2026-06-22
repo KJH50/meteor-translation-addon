@@ -4,7 +4,7 @@
 <h1>Meteor Translation Addon</h1>
 <h2>流星翻译插件</h2>
 </div>
-
+在原版基础上完成了更全面的翻译
 
 本模组翻译已完成
 感谢 [顶针](https://github.com/dingzhen-vape) 提供的lang文件
