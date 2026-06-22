@@ -4,9 +4,17 @@ import com.nippaku_zanmu.trans_addon.mixin.ModuleAccessor;
 import com.nippaku_zanmu.trans_addon.mixin.SettingAccessor;
 import com.nippaku_zanmu.trans_addon.mixin.SettingGroupAccessor;
 import com.nippaku_zanmu.trans_addon.modules.Translation;
+import com.nippaku_zanmu.trans_addon.util.NameCache;
 import com.nippaku_zanmu.trans_addon.util.trans_engine.AbstractTransEngine;
+import meteordevelopment.meteorclient.gui.GuiThemes;
+import meteordevelopment.meteorclient.gui.tabs.Tab;
+import meteordevelopment.meteorclient.gui.tabs.Tabs;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
+import meteordevelopment.meteorclient.settings.Settings;
+import meteordevelopment.meteorclient.systems.config.Config;
+import meteordevelopment.meteorclient.systems.hud.Hud;
+import meteordevelopment.meteorclient.systems.hud.HudElementInfo;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.utils.Utils;
@@ -98,6 +106,37 @@ public class JsonDump {
                 }
             }
 
+        }
+
+        // --- HUD Preset keys ---
+        for (HudElementInfo<?> info : Hud.get().infos.values()) {
+            if (!info.hasPresets()) continue;
+            for (HudElementInfo.Preset preset : info.presets) {
+                String presetName = TransUtil.baseFormat(preset.title);
+                String key = engine.getHudPresetTitleKey(info, presetName);
+                addEntry(key, dumpText ? engine.transHudPresetTitle(info, presetName) : preset.title);
+            }
+        }
+
+        // --- Tab keys ---
+        for (Tab tab : Tabs.get()) {
+            String key = engine.getTabNameKey(tab);
+            addEntry(key, dumpText ? engine.transTabName(tab) : tab.name);
+        }
+
+        // --- System-level SettingGroup keys ---
+        dumpSystemGroups(engine, engine2, "hud", Hud.get().settings, dumpText);
+        dumpSystemGroups(engine, engine2, "config", Config.get().settings, dumpText);
+        dumpSystemGroups(engine, engine2, "gui_theme", GuiThemes.get().settings, dumpText);
+    }
+
+    private void dumpSystemGroups(AbstractTransEngine engine, AbstractTransEngine engine2, String systemId, Settings settings, boolean dumpText) {
+        for (SettingGroup group : settings.groups) {
+            String originalName = NameCache.group(group);
+            if (originalName == null || originalName.isEmpty()) continue;
+
+            String key = engine.getSystemGroupNameKey(systemId, group);
+            addEntry(key, dumpText ? engine.transSystemGroupName(systemId, group) : group.name);
         }
     }
 
