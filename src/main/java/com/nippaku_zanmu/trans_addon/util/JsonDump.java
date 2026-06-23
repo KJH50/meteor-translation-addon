@@ -48,7 +48,7 @@ public class JsonDump {
         try {
             File path = new File(getTran().sSetDumpPath.get());
             if (!path.exists() & !(path.createNewFile())) {
-                ChatUtils.warning("DumpError Can't Create Dump File");
+                ChatUtils.warning("导出失败：无法创建导出文件");
                 entMap.clear();
                 return;
             }
