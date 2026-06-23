@@ -63,6 +63,8 @@ public class JsonDump {
             dumpBW.flush();
             dumpBW.close();
 
+            ChatUtils.info("已导出 %d 条翻译到 %s", entMap.size(), getTran().sSetDumpPath.get());
+
         } catch (IOException e) {
             ChatUtils.error(e.getMessage());
             entMap.clear();
