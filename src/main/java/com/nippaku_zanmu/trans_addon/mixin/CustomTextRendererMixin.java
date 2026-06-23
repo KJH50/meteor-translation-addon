@@ -7,13 +7,17 @@ import meteordevelopment.meteorclient.renderer.text.FontFace;
 import meteordevelopment.meteorclient.renderer.text.TextRenderer;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import net.minecraft.client.Minecraft;
+import org.lwjgl.BufferUtils;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 
 import static meteordevelopment.meteorclient.renderer.text.CustomTextRenderer.SHADOW_COLOR;
 
@@ -39,20 +43,50 @@ public abstract class CustomTextRendererMixin implements TextRenderer {
     @Shadow
     private double scale = 1;
 
-//    public CustomTextRendererMixin(FontFace fontFace) throws IOException {
-//        super(fontFace);
-//    }
-
 
     @Inject(method = "<init>",at = @At("RETURN"))
     public void onInit(FontFace fontFace, CallbackInfo ci) throws IOException {
 
         ByteBuffer buffer = fontFace.readToDirectByteBuffer();
+
+        // On Chinese locale, swap the font buffer with a system CJK font.
+        // This gives us CJK glyphs AND Latin glyphs from the same font,
+        // avoiding the baseline mismatch that occurs with multi-font fallback.
+        ByteBuffer cjk = tryLoadCjkFont();
+        if (cjk != null) buffer = cjk;
+
         this.fonts_fix = new FontFix[5];
 
         for(int i = 0; i < this.fonts_fix.length; ++i) {
             this.fonts_fix[i] = new FontFix(buffer, (int)Math.round(27.0 * ((double)i * 0.5 + 1.0)));
         }
+    }
+
+    @Unique
+    private static ByteBuffer tryLoadCjkFont() {
+        String lang = System.getProperty("user.language", "");
+        if (!lang.equalsIgnoreCase("zh")) return null;
+
+        String[] paths = {
+            System.getenv("SystemRoot") + "\\Fonts\\msyh.ttc",
+            System.getenv("SystemRoot") + "\\Fonts\\simsun.ttc",
+            System.getenv("SystemRoot") + "\\Fonts\\msyh.ttf",
+            "/System/Library/Fonts/PingFang.ttc",
+            "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+        };
+
+        for (String path : paths) {
+            File f = new File(path);
+            if (!f.isFile()) continue;
+            try (FileChannel ch = new FileInputStream(f).getChannel()) {
+                ByteBuffer buf = BufferUtils.createByteBuffer((int) ch.size());
+                ch.read(buf);
+                buf.flip();
+                System.out.println("[MeteorTranslation] Using CJK font: " + path);
+                return buf;
+            } catch (Exception ignored) {}
+        }
+        return null;
     }
 
 

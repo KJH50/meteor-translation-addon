@@ -26,6 +26,7 @@
     "ChatUtilsPrefixMixin",
     "WMeteorDropdownHeaderMixin",
     "WMeteorDropdownValueMixin",
+    "WCatppuccinLabelMixin",
     "WMultiLabelMixin",
     "WTextBoxMixin"
   ]
