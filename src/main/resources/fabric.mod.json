@@ -5,7 +5,8 @@
   "name": "Meteor Translation Addon",
   "description": "An addon offers unicode font rendering fix and translation for Meteor.",
   "authors": [
-    "Nippaku Zanmu"
+    "Nippaku Zanmu",
+    "KJH50"
   ],
   "contact": {
     "repo": "https://github.com/MeteorDevelopment/meteor-addon-template"
