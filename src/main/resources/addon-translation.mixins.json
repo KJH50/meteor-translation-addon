@@ -27,7 +27,7 @@
     "WMeteorDropdownHeaderMixin",
     "WMeteorDropdownValueMixin",
     "WCatppuccinLabelMixin",
-    "FontCjkMixin"
+    "FontCjkMixin",
     "WMultiLabelMixin",
     "WTextBoxMixin"
   ]
