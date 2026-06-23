@@ -4,7 +4,7 @@
 <h1>Meteor Translation Addon</h1>
 <h2>流星翻译插件</h2>
 
-[![Minecraft](https://img.shields.io/badge/Minecraft-21.6-blue)](https://github.com/KJH50/meteor-translation-addon)
+[![Minecraft](https://img.shields.io/badge/Minecraft-21.1.2-blue)](https://github.com/KJH50/meteor-translation-addon)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 </div>
 
