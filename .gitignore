@@ -31,3 +31,9 @@ bin/
 # fabric
 
 run/
+
+# temp files
+*.py
+unknown.json
+zh_cn_untranslated.txt
+.codegraph/

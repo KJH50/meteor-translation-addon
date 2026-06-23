@@ -45,7 +45,7 @@ public class MeteorTranslation extends MeteorAddon {
         if (unknown.isEmpty()) return;
 
         try {
-            File path = new File("C:\\Users\\KJH50\\AppData\\Local\\Temp\\opencode\\meteor-translation-addon\\unknown.json");
+            File path = new File("meteor-client/meteor-translation-addon/unknown.json");
             path.getParentFile().mkdirs();
 
             try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(

@@ -79,7 +79,7 @@ public class Translation extends Module {
 
     public final Setting<String> sSetDumpPath = sgDev.add(new StringSetting.Builder()
         .name("dump-path")
-        .defaultValue("D:\\hack\\Misc\\meteor-translation-addon\\test\\en_us.json")
+        .defaultValue("meteor-client/meteor-translation-addon/en_us.json")
         .build());
 
     public final Setting<Boolean> bSetDumpText = sgDev.add(new BoolSetting.Builder()
@@ -101,7 +101,7 @@ public class Translation extends Module {
 
     public final Setting<String> sSetUnknownDumpPath = sgDev.add(new StringSetting.Builder()
         .name("unknown-dump-path")
-        .defaultValue("C:\\Users\\KJH50\\AppData\\Local\\Temp\\opencode\\meteor-translation-addon\\unknown.json")
+        .defaultValue("meteor-client/meteor-translation-addon/unknown.json")
         .visible(bSetScanUnknown::get)
         .build());
 
